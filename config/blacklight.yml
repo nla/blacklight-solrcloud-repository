@@ -1,0 +1,7 @@
+load_defaults: 7.28.0
+development:
+  adapter: solr_cloud
+  url: "http://127.0.0.1:8983/solr/blacklight"
+test:
+  adapter: solr_cloud
+  url: "http://127.0.0.1:8983/solr/blacklight"
