@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler-audit"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rspec-rails"
-  spec.add_development_dependency "rubocop-rails", "~> 2.16.1"
+  spec.add_development_dependency "rubocop-rails", "~> 2.17.0"
   spec.add_development_dependency "rubocop-rake"
   spec.add_development_dependency "rubocop-rspec"
   spec.add_development_dependency "simplecov", "~> 0.21.2"
