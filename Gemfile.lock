@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    blacklight-solr_cloud (0.1.0)
+    blacklight-solrcloud-repository (0.1.0)
       blacklight (~> 7.30)
       rails (~> 7.0.4)
       rsolr
@@ -264,7 +264,7 @@ PLATFORMS
   arm64-darwin-21
 
 DEPENDENCIES
-  blacklight-solr_cloud!
+  blacklight-solrcloud-repository!
   brakeman
   bundler-audit
   pg

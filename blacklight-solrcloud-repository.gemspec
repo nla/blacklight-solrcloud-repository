@@ -1,14 +1,14 @@
 require_relative "lib/blacklight/solr_cloud/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "blacklight-solr_cloud"
+  spec.name = "blacklight-solrcloud-repository"
   spec.version = Blacklight::SolrCloud::VERSION
   spec.authors = ["Yetrina Battad"]
   spec.email = ["hello@yetti.io"]
 
   spec.summary = "Blacklight repository to connect with a collection on a ZooKeeper managed SolrCloud cluster."
   spec.homepage = "https://github.com/nla/blacklight-solrcloud-repository"
-  spec.license = "MIT"
+  spec.license = "Apache-2.0"
   spec.required_ruby_version = ">= 3.0.2"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
@@ -17,7 +17,6 @@ Gem::Specification.new do |spec|
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/nla/blacklight-solrcloud-repository.git"
-  spec.metadata["changelog_uri"] = "https://github.com/nla/blacklight-solrcloud-repository/blob/main/CHANGELOG.md"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.md"]
