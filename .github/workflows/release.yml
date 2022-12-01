@@ -1,0 +1,74 @@
+# This workflow is run manually and requires input of the next version of the library.
+
+name: "Release"
+on:
+  workflow_dispatch:
+
+jobs:
+  cut-release:
+    name: Create a new release
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+      RAILS_ENV: test
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: ruby
+          package-name: blacklight-solrcloud-repository
+          bump-minor-pre-major: true
+          version-file: "lib/blacklight/solr_cloud/version.rb"
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        if: ${{ steps.cut-release.outputs.release_created }}
+
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+        if: ${{ steps.cut-release.outputs.release_created }}
+
+      - name: RuboCop linting
+        run: |
+          bundle exec rubocop --parallel
+        if: ${{ steps.cut-release.outputs.release_created }}
+
+      - name: Bundler Audit
+        run: |
+          bundle exec bundle audit check --update
+        if: ${{ steps.cut-release.outputs.release_created }}
+
+      - name: Spin up SolrCloud + Zookeeper cluster
+        uses: isbang/compose-action@v1.4.1
+        with:
+          compose-file: "./solr/docker-compose.yml"
+          down-flags: "--volumes"
+        if: ${{ steps.cut-release.outputs.release_created }}
+
+      - name: Check Zookeeper status
+        run: |
+          echo "ruok" | nc localhost 2181 ; echo
+        if: ${{ steps.cut-release.outputs.release_created }}
+
+      - name: RSpec tests
+        run: |
+          bundle exec rspec
+        if: ${{ steps.cut-release.outputs.release_created }}
+
+      - name: Simplecov Report
+        uses: aki77/simplecov-report-action@v1
+        with:
+          failedThreshold: 80
+          token: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ steps.cut-release.outputs.release_created && github.actor != 'dependabot[bot]' }}
+
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v1.1.7
+        id: git-cliff
+        with:
+          config: .github/git-cliff.toml
+          args: --verbose
+        env:
+          OUTPUT: CHANGELOG.md
+        if: ${{ steps.cut-release.outputs.release_created }}
