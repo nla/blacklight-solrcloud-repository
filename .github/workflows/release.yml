@@ -1,0 +1,74 @@
+# This workflow creates a release pull request.
+
+name: "Release"
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cut-release:
+    name: Create a new release
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+      RAILS_ENV: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: RuboCop linting
+        run: |
+          bundle exec rubocop --parallel
+
+      - name: Bundler Audit
+        run: |
+          bundle exec bundle audit check --update
+
+      - name: Spin up SolrCloud + Zookeeper cluster
+        uses: isbang/compose-action@v1.4.1
+        with:
+          compose-file: "./solr/docker-compose.yml"
+          down-flags: "--volumes"
+
+      - name: Check Zookeeper status
+        run: |
+          echo "ruok" | nc localhost 2181 ; echo
+
+      - name: RSpec tests
+        run: |
+          bundle exec rspec
+
+      - name: Simplecov Report
+        uses: aki77/simplecov-report-action@v1
+        with:
+          failedThreshold: 80
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          release-type: ruby
+          package-name: blacklight-solrcloud-repository
+          bump-minor-pre-major: true
+          bump-patch-for-minor-pre-major: true
+          changelog-types: >-
+            [
+              {"type":"feat","section":"Features","hidden":false},
+              {"type":"fix","section":"Bug Fixes","hidden":false},
+              {"type":"perf","section":"Performance Improvements","hidden":false},
+              {"type":"revert","section":"Reverts","hidden":false},
+              {"type":"docs","section":"Documentation","hidden":false},
+              {"type":"style","section":"Styles","hidden":false},
+              {"type":"chore","section":"Miscellaneous","hidden":false},
+              {"type":"refactor","section":"Code Refactoring","hidden":false},
+              {"type":"test","section":"Tests","hidden":false},
+              {"type":"build","section":"Build System","hidden":false},
+              {"type":"ci","section":"Continuous Integration","hidden":false}
+            ]
+          version-file: "lib/blacklight/solr_cloud/version.rb"
