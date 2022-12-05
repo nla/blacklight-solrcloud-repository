@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.2.1](https://github.com/nla/blacklight-solrcloud-repository/compare/v0.2.0...v0.2.1) (2022-12-05)
+
+
+### Continuous Integration
+
+* update release workflow to build and install gem after a release ([6405eea](https://github.com/nla/blacklight-solrcloud-repository/commit/6405eeac0f5274cde293bf34a645cc11c11a0327))
+
 ## [0.2.0](https://github.com/nla/blacklight-solrcloud-repository/compare/0.1.0...v0.2.0) (2022-12-05)
 
 
