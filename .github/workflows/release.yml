@@ -35,3 +35,44 @@ jobs:
               {"type":"ci","section":"Continuous Integration","hidden":false}
             ]
           version-file: "lib/blacklight/solr_cloud/version.rb"
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Install gems
+        run: |
+          bundle install
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Spin up SolrCloud + Zookeeper cluster
+        uses: isbang/compose-action@v1.4.1
+        with:
+          compose-file: "./solr/docker-compose.yml"
+          down-flags: "--volumes"
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Check Zookeeper status
+        run: |
+          echo "ruok" | nc localhost 2181 ; echo
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: RSpec tests
+        run: |
+          bundle exec rspec
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Simplecov Report
+        uses: aki77/simplecov-report-action@v1
+        with:
+          failedThreshold: 80
+          token: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ steps.release.outputs.release_created && github.actor != 'dependabot[bot]' }}
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore: update Gemfile.lock after release"
