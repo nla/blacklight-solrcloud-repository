@@ -37,11 +37,11 @@ module Blacklight
         ::RSolr.connect(connection_config.merge(adapter: connection_config[:http_adapter], url: select_node(all_urls)))
       end
 
-      def determine_node_urls
+      def determine_node_urls(leader_only = false)
         synchronize do
           all_urls = []
           all_nodes.each do |node|
-            next unless active_node?(node, live_nodes)
+            next unless active_node?(node, live_nodes, leader_only)
             url = "#{node["base_url"]}/#{collection}"
             all_urls << url
           end
@@ -92,8 +92,12 @@ module Blacklight
         url
       end
 
-      def active_node?(node, live_nodes)
-        live_nodes[node["node_name"]] && node["state"] == "active"
+      def active_node?(node, live_nodes, leader_only = false)
+        if leader_only
+          live_nodes[node["node_name"]] && node["state"] == "active" && node["leader"] == leader_only.to_s
+        else
+          live_nodes[node["node_name"]] && node["state"] == "active"
+        end
       end
     end
   end

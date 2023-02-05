@@ -81,4 +81,12 @@ RSpec.describe Blacklight::SolrCloud::Repository, type: :api do
       repository.connection
     end.to raise_error(Blacklight::SolrCloud::NotEnoughNodes, /There are not enough nodes to handle the request./)
   end
+
+  context "when leaders only" do
+    it "retrieves only the leader node urls from zookeeper" do
+      expect(repository.send(:determine_node_urls, true).sort).to eq(
+        %w[http://192.168.1.22:8983/solr/collection1 http://192.168.1.24:8983/solr/collection1].sort
+      )
+    end
+  end
 end
