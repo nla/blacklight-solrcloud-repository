@@ -1,3 +1,5 @@
+⚠️ This repository has been superceeded by [nla-blacklight_common](https://github.com/nla/nla-blacklight_common). All new development is happening in that repository. ⚠️
+
 # blacklight-solrcloud-repository
 
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nla/blacklight-solrcloud-repository/verify.yml?branch=main&logo=github)](https://github.com/nla/blacklight-solrcloud-repository/actions/workflows/verify.yml)
