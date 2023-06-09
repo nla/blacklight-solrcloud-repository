@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.2.4](https://github.com/nla/blacklight-solrcloud-repository/compare/0.2.3...0.2.4) (2023-06-09)
+
+
+### Miscellaneous
+
+* upgrade dependencies ([165a35d](https://github.com/nla/blacklight-solrcloud-repository/commit/165a35d1229e81d86e35a9e82d2becd48ec5d819))
+
 ## [0.2.3](https://github.com/nla/blacklight-solrcloud-repository/compare/0.2.2...0.2.3) (2023-05-02)
 
 
